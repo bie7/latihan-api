@@ -18,7 +18,7 @@ sBtn.addEventListener('click', async function () {
 });
 
 function getMovies(key) {
-    return fetch('http://www.omdbapi.com/?apikey=d6259be9&s=' + key)
+    return fetch('https://www.omdbapi.com/?apikey=d6259be9&s=' + key)
         .then(Response => {
             if (!Response.ok) {
                 throw new Error(Response.statusText);
