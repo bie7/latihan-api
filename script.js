@@ -5,16 +5,32 @@
 
 const sBtn = document.querySelector('.search-btn');
 sBtn.addEventListener('click', async function () {
-    const inputKey = document.querySelector('.input-key'),
-        filmKey = await getMovies(inputKey.value);
-    // console.log(film);
-    updateUiCard(filmKey);
+    try {
+        const inputKey = document.querySelector('.input-key'),
+            filmKey = await getMovies(inputKey.value);
+        updateUiCard(filmKey);
+    } catch (err) {
+        Swal.fire({
+            icon: 'error',
+            text: err
+        });
+    }
 });
 
 function getMovies(key) {
     return fetch('http://www.omdbapi.com/?apikey=d6259be9&s=' + key)
-        .then(Response => Response.json())
-        .then(Response => Response.Search);
+        .then(Response => {
+            if (!Response.ok) {
+                throw new Error(Response.statusText);
+            }
+            return Response.json();
+        })
+        .then(Response => {
+            if (Response.Response === 'False') {
+                throw new Error(Response.Error);
+            }
+            return Response.Search;
+        });
 }
 
 
