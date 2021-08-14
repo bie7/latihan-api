@@ -46,16 +46,33 @@ function updateUiCard(f) {
 // event  binding
 document.addEventListener('click', async function (e) {
     if (e.target.classList.contains('btn-detail')) {
-        const mvsDetail = e.target.dataset.imdbid,
-            getDetail = await getMoviesDetail(mvsDetail);
-        updateMvsDetail(getDetail);
+        try {
+            const mvsDetail = e.target.dataset.imdbid,
+                getDetail = await getMoviesDetail(mvsDetail);
+            updateMvsDetail(getDetail);
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                text: err
+            });
+        }
     }
 });
 
 function getMoviesDetail(key) {
-    return fetch('http://www.omdbapi.com/?apikey=d6259be9&i=' + key)
-        .then(Response => Response.json())
-        .then(mov => mov);
+    return fetch('https://www.omdbapi.com/?apikey=d6259be9&i=' + key)
+        .then(Response => {
+            if (!Response.ok) {
+                throw new Error(Response.statusText);
+            }
+            return Response.json();
+        })
+        .then(Response => {
+            if (Response.Response === 'False') {
+                throw new Error(Response.Error)
+            }
+            return Response;
+        });
 }
 
 function updateMvsDetail(mov) {
@@ -63,6 +80,8 @@ function updateMvsDetail(mov) {
         modalDetail = document.querySelector('.modal-body');
     modalDetail.innerHTML = mvsDtl;
 };
+
+
 
 
 function cardFilm(m) {
