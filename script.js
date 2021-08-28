@@ -1,10 +1,4 @@
-// document.addEventListener('keydown', (event) => {
-//     let name = event.key;
-//     let code = event.code;
-// }, false);
-
-const sBtn = document.querySelector('.search-btn');
-sBtn.addEventListener('click', async function () {
+async function searchMovie() {
     try {
         const inputKey = document.querySelector('.input-key'),
             filmKey = await getMovies(inputKey.value);
@@ -15,7 +9,22 @@ sBtn.addEventListener('click', async function () {
             text: err
         });
     }
+    inputKey.value = '';
+}
+
+
+const sBtn = document.querySelector('.search-btn');
+sBtn.addEventListener('click', function () {
+    searchMovie()
 });
+
+const inputKey = document.querySelector('.input-key');
+inputKey.addEventListener('keyup', (e) => {
+    if (e.keyCode === 13) {
+        searchMovie()
+    }
+})
+
 
 function getMovies(key) {
     return fetch('https://www.omdbapi.com/?apikey=d6259be9&s=' + key)
